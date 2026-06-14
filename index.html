@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMPACKTA AI — Revenue Calculator</title>
+<style>
+  :root {
+    --bg: #060d1b;
+    --panel: #0c1527;
+    --panel-2: #101e36;
+    --border: #1e2d47;
+    --border-light: #284069;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --muted-2: #64748b;
+    --blue: #4e8cff;
+    --blue-light: #7eb8ff;
+    --green: #00d4a8;
+    --green-2: #10b981;
+    --amber: #f59e0b;
+    --red: #ff5a52;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 20px;
+  }
+  .wrap {
+    width: 100%;
+    max-width: 560px;
+  }
+  .dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background .3s;
+  }
+  .dot.active { background: var(--blue); }
+  .dot.done { background: var(--green); }
+
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 3px;
+    font-weight: 700;
+    color: var(--muted-2);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: 46px;
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: 18px;
+  }
+  .hl { white-space: nowrap; padding: 0 2px; }
+  .hl-red { background-image: linear-gradient(transparent 58%, rgba(255,90,82,.40) 58%); }
+  .hl-amber { background-image: linear-gradient(transparent 58%, rgba(245,158,11,.45) 58%); }
+  .sub {
+    font-size: 17px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    max-width: 480px;
+  }
+
+  .field { margin-bottom: 22px; }
+  label.flbl {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 9px;
+  }
+  input[type="text"], input[type="number"], select {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-size: 16px;
+    padding: 16px 18px;
+    outline: none;
+    transition: border-color .2s, background .2s;
+    font-family: inherit;
+    appearance: none;
+  }
+  input:focus, select:focus { border-color: var(--blue); background: var(--panel-2); }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8' viewBox='0 0 14 8' fill='none'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%2394a3b8' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 18px center;
+    cursor: pointer;
+  }
+  ::placeholder { color: var(--muted-2); }
+
+  .btn {
+    display: block;
+    width: 100%;
+    border: none;
+    border-radius: 14px;
+    padding: 18px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform .12s, filter .2s;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .btn:active { transform: scale(.985); }
+  .btn-primary { background: var(--panel-2); border: 1px solid var(--border-light); margin-top: 8px; }
+  .btn-primary:hover { filter: brightness(1.25); }
+  .btn-go { background: linear-gradient(135deg, var(--blue), #3567d6); margin-top: 8px; }
+  .btn-cta { background: linear-gradient(135deg, var(--green), var(--green-2)); color: #03241c; margin-top: 14px; }
+  .btn-cta:hover, .btn-go:hover { filter: brightness(1.08); }
+  .btn-wa { background: var(--panel); border: 1px solid var(--border); margin-top: 10px; }
+  .btn-wa:hover { border-color: var(--green); }
+  .back {
+    background: none; border: none; color: var(--blue-light);
+    font-size: 14px; cursor: pointer; font-family: inherit;
+    display: block; margin: 18px auto 0; padding: 8px;
+  }
+  .back:hover { text-decoration: underline; }
+
+  /* Sliders */
+  .slider-block { margin-bottom: 30px; }
+  .slider-q { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+  .slider-val { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 16px; }
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px; border-radius: 4px;
+    background: var(--border-light); outline: none; cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--text); border: 4px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--border-light);
+    cursor: pointer;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--text); border: 4px solid var(--bg); cursor: pointer;
+  }
+  .scale {
+    display: flex; justify-content: space-between;
+    font-size: 13px; color: var(--muted-2); margin-top: 10px;
+  }
+
+  .toggle-q { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .toggle-row { display: flex; gap: 12px; margin-bottom: 26px; }
+  .toggle {
+    flex: 1; text-align: center;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; font-weight: 700; font-size: 15px;
+    cursor: pointer; transition: all .15s;
+  }
+  .toggle.on { background: var(--panel-2); border-color: var(--blue); color: var(--blue-light); }
+
+  /* Results */
+  .res-label { font-size: 12px; letter-spacing: 3px; font-weight: 700; text-transform: uppercase; color: var(--muted-2); margin-bottom: 14px; }
+  .res-context { font-size: 16px; color: var(--muted); margin-bottom: 26px; }
+  .bignum {
+    font-size: 66px; font-weight: 800; letter-spacing: -2px; line-height: 1;
+    color: var(--red);
+  }
+  .bignum.green { color: var(--green); }
+  .bignum.amber { color: var(--amber); }
+  .bignum-sub { font-size: 15px; font-weight: 600; color: var(--muted); margin-top: 8px; }
+  .formula {
+    font-size: 13px; color: var(--muted-2);
+    border-left: 2px solid var(--border-light);
+    padding: 6px 0 6px 14px; margin: 18px 0 30px;
+  }
+  .formula b { color: var(--text); font-weight: 700; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px; margin-bottom: 14px;
+  }
+  .card-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; gap: 9px; }
+  .card-body { font-size: 14px; color: var(--muted); }
+  .card-body b { color: var(--text); }
+  .divider-num { text-align: center; margin: 36px 0; }
+  .scenario {
+    background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: 16px; padding: 26px; text-align: center; margin: 30px 0;
+  }
+  .final-pitch { text-align: center; margin: 40px 0 24px; }
+  .final-pitch h2 { font-size: 30px; font-weight: 800; letter-spacing: -.5px; line-height: 1.15; margin-bottom: 12px; }
+  .final-pitch p { font-size: 15px; color: var(--muted); }
+  .reassure { text-align: center; font-size: 13px; color: var(--muted-2); margin-top: 18px; }
+  .reassure b { color: var(--green); }
+  .disclaimer { text-align: center; font-size: 12px; color: var(--muted-2); margin-top: 16px; max-width: 420px; margin-left: auto; margin-right: auto; line-height: 1.5; }
+  .center { text-align: center; }
+
+  .screen { display: none; animation: fade .4s ease; }
+  .screen.active { display: block; }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 520px) {
+    h1 { font-size: 36px; }
+    .bignum { font-size: 52px; }
+    body { padding: 32px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="dots">
+    <div class="dot active" id="d0"></div>
+    <div class="dot" id="d1"></div>
+    <div class="dot" id="d2"></div>
+  </div>
+
+  <!-- SCREEN 1 -->
+  <section class="screen active" id="s0">
+    <div class="eyebrow">IMPACKTA AI — Free Tool</div>
+    <h1>See what you're really <span class="hl hl-red">losing</span>.</h1>
+    <p class="sub">4 questions. 30 seconds. A straight look at the revenue slipping past your business every month.</p>
+
+    <div class="field">
+      <label class="flbl">Your first name</label>
+      <input type="text" id="name" placeholder="e.g. Sarah" autocomplete="off">
+    </div>
+    <div class="field">
+      <label class="flbl">Your sector</label>
+      <select id="sector">
+        <option value="" disabled selected>Select your sector</option>
+        <option value="law firm">Law firm</option>
+        <option value="accountancy practice">Accountancy</option>
+        <option value="real estate">Real estate</option>
+        <option value="marketing agency">Marketing agency</option>
+        <option value="healthcare">Healthcare</option>
+        <option value="catering">Catering</option>
+        <option value="construction">Construction</option>
+        <option value="business">Other</option>
+      </select>
+    </div>
+    <div class="field">
+      <label class="flbl">Enquiries / calls a month</label>
+      <input type="number" id="enquiries" value="80" min="1">
+    </div>
+    <div class="field">
+      <label class="flbl">Average value per client / job (£)</label>
+      <input type="number" id="value" value="1200" min="1">
+    </div>
+
+    <button class="btn btn-go" onclick="goTo(1)">Continue &rarr;</button>
+  </section>
+
+  <!-- SCREEN 2 -->
+  <section class="screen" id="s1">
+    <div class="eyebrow" id="s2-eyebrow">Nearly there</div>
+    <h1>Be <span class="hl hl-amber">honest</span> with yourself.</h1>
+    <p class="sub">The number's only useful if the inputs are real.</p>
+
+    <div class="slider-block">
+      <div class="slider-q">What % of enquiries do you actually answer or respond to in time?</div>
+      <div class="slider-val" id="ansVal">You answer 65% of enquiries</div>
+      <input type="range" id="answer" min="0" max="100" value="65">
+      <div class="scale"><span>Miss most</span><span>Catch all</span></div>
+    </div>
+
+    <div class="slider-block">
+      <div class="slider-q">Of the enquiries you do reach, what % turn into paying clients?</div>
+      <div class="slider-val" id="closeVal">You convert 40%</div>
+      <input type="range" id="close" min="0" max="100" value="40">
+      <div class="scale"><span>0%</span><span>100%</span></div>
+    </div>
+
+    <div class="toggle-q">Do you have a website?</div>
+    <div class="toggle-row" id="webToggle">
+      <div class="toggle on" data-v="yes">Yes</div>
+      <div class="toggle" data-v="no">No</div>
+    </div>
+
+    <div class="toggle-q">Do you chase up missed enquiries &amp; old leads?</div>
+    <div class="toggle-row" id="chaseToggle">
+      <div class="toggle" data-v="yes">Yes</div>
+      <div class="toggle on" data-v="no">No</div>
+    </div>
+
+    <button class="btn btn-go" onclick="calculate()">Show me the damage &rarr;</button>
+    <button class="back" onclick="goTo(0)">&larr; Back</button>
+  </section>
+
+  <!-- SCREEN 3 -->
+  <section class="screen" id="s2">
+    <div class="res-label" id="repLabel">Your Revenue Report</div>
+    <h1 id="repHeadline">Here's the gap.</h1>
+    <p class="res-context" id="repContext"></p>
+
+    <div class="bignum" id="lossNum">£0</div>
+    <div class="bignum-sub">slipping past your business <b style="color:var(--red)">every year</b></div>
+    <div class="formula" id="formula"></div>
+
+    <div id="cards"></div>
+
+    <div class="divider-num">
+      <div class="res-label" style="color:var(--green)">Recoverable with IMPACKTA</div>
+      <div class="bignum green" id="recNum">£0</div>
+      <div class="bignum-sub">a conservative slice back in your pocket</div>
+    </div>
+
+    <div class="scenario">
+      <div class="res-label">Do nothing for 3 years</div>
+      <div class="bignum amber" id="threeYr" style="font-size:48px">£0</div>
+      <div class="bignum-sub">gone — sitting in a competitor's pocket</div>
+    </div>
+
+    <div class="final-pitch">
+      <h2 id="finalPitch"></h2>
+      <p>Book a free 15-min call. No pitch — just a clear plan to fix it.</p>
+    </div>
+
+    <a class="btn btn-cta" id="ctaCall" href="https://calendly.com/michael-impackta/ai-discovery-call" target="_blank">Book a free consultation &rarr;</a>
+    <a class="btn btn-wa" id="ctaWa" href="https://wa.me/447854021222" target="_blank">💬 Or WhatsApp me direct</a>
+
+    <div class="disclaimer">Estimates based on the inputs you provided. Your audit replaces these with your real figures.</div>
+    <button class="back" onclick="goTo(1)">&larr; Adjust my numbers</button>
+  </section>
+
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const fmt = n => '£' + Math.round(n).toLocaleString('en-GB');
+
+  // Animated count-up: digits cycle rapidly toward the target value
+  function countUp(el, target, dur = 1400) {
+    const start = performance.now();
+    function frame(now) {
+      const t = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+      if (t < 1) {
+        // jitter the trailing digits while running for a "cycling" feel
+        const jitter = Math.round(target * eased + (Math.random() * target * 0.04 * (1 - eased)));
+        el.textContent = fmt(jitter);
+        requestAnimationFrame(frame);
+      } else {
+        el.textContent = fmt(target);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  let web = 'yes', chase = 'no';
+
+  // Sliders live feedback
+  $('answer').addEventListener('input', e => {
+    $('ansVal').textContent = `You answer ${e.target.value}% of enquiries`;
+  });
+  $('close').addEventListener('input', e => {
+    $('closeVal').textContent = `You convert ${e.target.value}%`;
+  });
+
+  // Toggles
+  function wireToggle(rowId, setter) {
+    document.querySelectorAll(`#${rowId} .toggle`).forEach(t => {
+      t.addEventListener('click', () => {
+        document.querySelectorAll(`#${rowId} .toggle`).forEach(x => x.classList.remove('on'));
+        t.classList.add('on');
+        setter(t.dataset.v);
+      });
+    });
+  }
+  wireToggle('webToggle', v => web = v);
+  wireToggle('chaseToggle', v => chase = v);
+
+  function goTo(n) {
+    [0,1,2].forEach(i => $('s'+i).classList.remove('active'));
+    $('s'+n).classList.add('active');
+    [0,1,2].forEach(i => {
+      const d = $('d'+i);
+      d.classList.remove('active','done');
+      if (i < n) d.classList.add('done');
+      else if (i === n) d.classList.add('active');
+    });
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function calculate() {
+    const name = ($('name').value || '').trim();
+    const sector = $('sector').value || 'business';
+    const enquiries = Math.max(0, +$('enquiries').value || 0);
+    const value = Math.max(0, +$('value').value || 0);
+    const answerPct = +$('answer').value / 100;
+    const closePct = +$('close').value / 100;
+
+    const missedPct = 1 - answerPct;
+    const missedEnquiries = enquiries * missedPct;
+
+    // Annual loss = missed enquiries that would have closed × value × 12
+    const annualLoss = missedEnquiries * closePct * value * 12;
+
+    // Recoverable: conservative ~ 50% of the loss, nudged by website/chase gaps
+    let recoverFactor = 0.55;
+    if (web === 'no') recoverFactor += 0.10;
+    if (chase === 'no') recoverFactor += 0.10;
+    const recoverable = annualLoss * recoverFactor;
+
+    const threeYear = annualLoss * 3;
+
+    // Personalise
+    const cap = name ? name.charAt(0).toUpperCase() + name.slice(1) : 'Here';
+    $('repLabel').textContent = name ? `${cap}'s Revenue Report` : 'Your Revenue Report';
+    $('s2-eyebrow').textContent = name ? `Nearly there, ${cap}` : 'Nearly there';
+    $('repHeadline').innerHTML = name
+      ? `${cap}, here's the <span class="hl hl-red">gap</span>.`
+      : `Here's the <span class="hl hl-red">gap</span>.`;
+    $('repContext').textContent = `Based on ~${Math.round(missedEnquiries)} missed enquiries a month for your ${sector}.`;
+
+    $('lossNum').textContent = '£0';
+    $('recNum').textContent = '£0';
+    $('threeYr').textContent = '£0';
+    $('finalPitch').innerHTML = `You're leaving <span class="hl hl-red">${fmt(annualLoss)}</span> on the table every year.`;
+
+    $('formula').innerHTML =
+      `<b>${enquiries}</b> enquiries × <b>${Math.round(missedPct*100)}%</b> missed × <b>${Math.round(closePct*100)}%</b> conversion × <b>${fmt(value)}</b> per client × <b>12</b> months`;
+
+    // Diagnostic cards (tailored to answers)
+    const cards = [];
+    cards.push(`
+      <div class="card">
+        <div class="card-title">📞 Missed-enquiry recovery</div>
+        <div class="card-body">You're missing <b>~${Math.round(missedEnquiries)} enquiries a month</b>. An automated instant reply responds in seconds — most people go with whoever answers first. Estimated recovery: <b>${fmt(annualLoss*0.35)}/yr</b>.</div>
+      </div>`);
+    if (web === 'no') {
+      cards.push(`
+      <div class="card">
+        <div class="card-title">🌐 You don't have a website</div>
+        <div class="card-body">Without one, every enquiry depends on you being reachable. A site that captures, replies and books on autopilot typically adds <b>10–15% more booked work</b> — and stops leaking the enquiries you never see.</div>
+      </div>`);
+    } else {
+      cards.push(`
+      <div class="card">
+        <div class="card-title">🌐 Your website as the hub</div>
+        <div class="card-body">A website isn't a brochure — it's the <b>system the whole business runs through</b>: capture, instant reply, booking, reviews, all on autopilot. If yours doesn't do that, it's leaking too.</div>
+      </div>`);
+    }
+    if (chase === 'no') {
+      cards.push(`
+      <div class="card">
+        <div class="card-title">📨 Follow-up that runs itself</div>
+        <div class="card-body">You're <b>not chasing</b> missed enquiries or old leads right now — that's pure lost revenue. Automated follow-up gives every cold lead a second chance without you lifting a finger.</div>
+      </div>`);
+    } else {
+      cards.push(`
+      <div class="card">
+        <div class="card-title">📨 Follow-up that runs itself</div>
+        <div class="card-body">You already chase up — good. Automating it means nothing slips when you're busy, and every old lead gets a second chance automatically.</div>
+      </div>`);
+    }
+    $('cards').innerHTML = cards.join('');
+
+    goTo(2);
+
+    // Pre-fill the WhatsApp message with their loss figure
+    const waMsg = `Hi Michael, just used the revenue calculator on your site. It says I'm losing ${fmt(annualLoss)}/yr. Want to hear how you'd fix it.`;
+    $('ctaWa').href = `https://wa.me/447854021222?text=${encodeURIComponent(waMsg)}`;
+
+    // Kick off the cycling count-up on the headline figures
+    countUp($('lossNum'), annualLoss, 1500);
+    setTimeout(() => countUp($('recNum'), recoverable, 1300), 250);
+    setTimeout(() => countUp($('threeYr'), threeYear, 1300), 450);
+  }
+</script>
+</body>
+</html>
