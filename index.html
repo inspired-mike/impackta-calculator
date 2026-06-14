@@ -474,7 +474,7 @@
     goTo(2);
 
     // Pre-fill the WhatsApp message with their loss figure
-    const waMsg = `Hi Michael, just used the revenue calculator on your site. It says I'm losing ${fmt(annualLoss)}/yr. Want to hear how you'd fix it.`;
+    const waMsg = `Hi Michael — just used the revenue calculator. It says I'm losing ${fmt(annualLoss)}/yr. Want to hear how you'd fix it.`;
     $('ctaWa').href = `https://wa.me/447854021222?text=${encodeURIComponent(waMsg)}`;
 
     // Kick off the cycling count-up on the headline figures
