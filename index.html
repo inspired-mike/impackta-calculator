@@ -273,15 +273,15 @@
     <p class="sub">The number's only useful if the inputs are real.</p>
 
     <div class="slider-block">
-      <div class="slider-q">What % of enquiries do you actually answer or respond to in time?</div>
-      <div class="slider-val" id="ansVal">You answer 65% of enquiries</div>
+      <div class="slider-q">What percentage of incoming enquiries does your business respond to in good time?</div>
+      <div class="slider-val" id="ansVal">You respond to 65% of enquiries</div>
       <input type="range" id="answer" min="0" max="100" value="65">
       <div class="scale"><span>Miss most</span><span>Catch all</span></div>
     </div>
 
     <div class="slider-block">
-      <div class="slider-q">Of the enquiries you do reach, what % turn into paying clients?</div>
-      <div class="slider-val" id="closeVal">You convert 40%</div>
+      <div class="slider-q">Of the enquiries you reach, what percentage convert into paying clients?</div>
+      <div class="slider-val" id="closeVal">You convert 40% of those</div>
       <input type="range" id="close" min="0" max="100" value="40">
       <div class="scale"><span>0%</span><span>100%</span></div>
     </div>
@@ -292,7 +292,7 @@
       <div class="toggle" data-v="no">No</div>
     </div>
 
-    <div class="toggle-q">Do you chase up missed enquiries &amp; old leads?</div>
+    <div class="toggle-q">Do you actively follow up on missed enquiries and old leads?</div>
     <div class="toggle-row" id="chaseToggle">
       <div class="toggle" data-v="yes">Yes</div>
       <div class="toggle on" data-v="no">No</div>
@@ -366,10 +366,10 @@
 
   // Sliders live feedback
   $('answer').addEventListener('input', e => {
-    $('ansVal').textContent = `You answer ${e.target.value}% of enquiries`;
+    $('ansVal').textContent = `You respond to ${e.target.value}% of enquiries`;
   });
   $('close').addEventListener('input', e => {
-    $('closeVal').textContent = `You convert ${e.target.value}%`;
+    $('closeVal').textContent = `You convert ${e.target.value}% of those`;
   });
 
   // Toggles
