@@ -441,32 +441,32 @@
     cards.push(`
       <div class="card">
         <div class="card-title">📞 Missed-enquiry recovery</div>
-        <div class="card-body">You're missing <b>~${Math.round(missedEnquiries)} enquiries a month</b>. An automated instant reply responds in seconds — most people go with whoever answers first. Estimated recovery: <b>${fmt(annualLoss*0.35)}/yr</b>.</div>
+        <div class="card-body">You're currently missing around <b>${Math.round(missedEnquiries)} enquiries a month</b>. An automated instant response replies within seconds, and most prospects engage with whoever gets back to them first. Estimated annual recovery: <b>${fmt(annualLoss*0.35)}</b>.</div>
       </div>`);
     if (web === 'no') {
       cards.push(`
       <div class="card">
         <div class="card-title">🌐 You don't have a website</div>
-        <div class="card-body">Without one, every enquiry depends on you being reachable. A site that captures, replies and books on autopilot typically adds <b>10–15% more booked work</b> — and stops leaking the enquiries you never see.</div>
+        <div class="card-body">Without one, every enquiry depends on you being personally reachable. A website that captures, responds and books automatically typically adds <b>10 to 15% more booked work</b>, and stops the enquiries you never see from slipping away.</div>
       </div>`);
     } else {
       cards.push(`
       <div class="card">
         <div class="card-title">🌐 Your website as the hub</div>
-        <div class="card-body">A website isn't a brochure — it's the <b>system the whole business runs through</b>: capture, instant reply, booking, reviews, all on autopilot. If yours doesn't do that, it's leaking too.</div>
+        <div class="card-body">Your website should be more than a brochure. It's the <b>system your whole business runs through</b>: capturing enquiries, responding instantly, booking and gathering reviews automatically. If yours isn't doing that, it's leaking revenue too.</div>
       </div>`);
     }
     if (chase === 'no') {
       cards.push(`
       <div class="card">
         <div class="card-title">📨 Follow-up that runs itself</div>
-        <div class="card-body">You're <b>not chasing</b> missed enquiries or old leads right now — that's pure lost revenue. Automated follow-up gives every cold lead a second chance without you lifting a finger.</div>
+        <div class="card-body">You're <b>not currently following up</b> on missed enquiries or old leads, which is revenue left on the table. Automated follow-up gives every prospect a second touchpoint, with no manual effort from you.</div>
       </div>`);
     } else {
       cards.push(`
       <div class="card">
         <div class="card-title">📨 Follow-up that runs itself</div>
-        <div class="card-body">You already chase up — good. Automating it means nothing slips when you're busy, and every old lead gets a second chance automatically.</div>
+        <div class="card-body">You already follow up, which is good. Automating it ensures nothing slips when you're busy, and every previous lead receives a second touchpoint automatically.</div>
       </div>`);
     }
     $('cards').innerHTML = cards.join('');
