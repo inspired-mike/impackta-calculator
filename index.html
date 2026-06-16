@@ -315,9 +315,9 @@
     <div id="cards"></div>
 
     <div class="divider-num">
-      <div class="res-label" style="color:var(--green)">Recoverable with IMPACKTA</div>
+      <div class="res-label" style="color:var(--green)">Potentially recoverable with IMPACKTA</div>
       <div class="bignum green" id="recNum">£0</div>
-      <div class="bignum-sub">a conservative slice back in your pocket</div>
+      <div class="bignum-sub" id="recSub">Based on recovering a portion of what you're currently losing</div>
     </div>
 
     <div class="scenario">
@@ -328,7 +328,7 @@
 
     <div class="final-pitch">
       <h2 id="finalPitch"></h2>
-      <p>Book a free 15-min call. No pitch — just a clear plan to fix it.</p>
+      <p>Book a free 15-minute call and I'll talk you through what's fixable and where to start.</p>
     </div>
 
     <a class="btn btn-cta" id="ctaCall" href="https://calendly.com/michael-impackta/ai-discovery-call" target="_blank">Book a free consultation &rarr;</a>
@@ -412,9 +412,7 @@
     const annualLoss = missedEnquiries * closePct * value * 12;
 
     // Recoverable: conservative ~ 50% of the loss, nudged by website/chase gaps
-    let recoverFactor = 0.55;
-    if (web === 'no') recoverFactor += 0.10;
-    if (chase === 'no') recoverFactor += 0.10;
+    const recoverFactor = 0.56;
     const recoverable = annualLoss * recoverFactor;
 
     const threeYear = annualLoss * 3;
@@ -430,6 +428,7 @@
 
     $('lossNum').textContent = '£0';
     $('recNum').textContent = '£0';
+    $('recSub').textContent = `Based on recovering approximately ${Math.round(recoverFactor*100)}% of the ${fmt(annualLoss)} currently being lost.`;
     $('threeYr').textContent = '£0';
     $('finalPitch').innerHTML = `You're leaving <span class="hl hl-red">${fmt(annualLoss)}</span> on the table every year.`;
 
@@ -441,7 +440,7 @@
     cards.push(`
       <div class="card">
         <div class="card-title">📞 Missed-enquiry recovery</div>
-        <div class="card-body">You're currently missing around <b>${Math.round(missedEnquiries)} enquiries a month</b>. An automated instant response replies within seconds, and most prospects engage with whoever gets back to them first. Estimated annual recovery: <b>${fmt(annualLoss*0.35)}</b>.</div>
+        <div class="card-body">You're currently missing around <b>${Math.round(missedEnquiries)} enquiries every month</b>. Most prospects engage with whoever responds first. Instant replies ensure every lead receives a response within seconds.</div>
       </div>`);
     if (web === 'no') {
       cards.push(`
