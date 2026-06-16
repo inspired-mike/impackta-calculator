@@ -317,7 +317,7 @@
     <div class="divider-num">
       <div class="res-label" style="color:var(--green)">Potentially recoverable with IMPACKTA</div>
       <div class="bignum green" id="recNum">£0</div>
-      <div class="bignum-sub" id="recSub">Based on recovering a portion of what you're currently losing</div>
+      <div class="bignum-sub">a conservative estimate of what you could win back</div>
     </div>
 
     <div class="scenario">
@@ -328,7 +328,7 @@
 
     <div class="final-pitch">
       <h2 id="finalPitch"></h2>
-      <p>Book a free 15-minute call and I'll talk you through what's fixable and where to start.</p>
+      <p>Get in touch and we'll take it from there.</p>
     </div>
 
     <a class="btn btn-cta" id="ctaCall" href="https://calendly.com/michael-impackta/ai-discovery-call" target="_blank">Book a free consultation &rarr;</a>
@@ -412,7 +412,9 @@
     const annualLoss = missedEnquiries * closePct * value * 12;
 
     // Recoverable: conservative ~ 50% of the loss, nudged by website/chase gaps
-    const recoverFactor = 0.56;
+    let recoverFactor = 0.56;
+    if (web === 'no') recoverFactor += 0.10;
+    if (chase === 'no') recoverFactor += 0.10;
     const recoverable = annualLoss * recoverFactor;
 
     const threeYear = annualLoss * 3;
@@ -428,7 +430,6 @@
 
     $('lossNum').textContent = '£0';
     $('recNum').textContent = '£0';
-    $('recSub').textContent = `Based on recovering approximately ${Math.round(recoverFactor*100)}% of the ${fmt(annualLoss)} currently being lost.`;
     $('threeYr').textContent = '£0';
     $('finalPitch').innerHTML = `You're leaving <span class="hl hl-red">${fmt(annualLoss)}</span> on the table every year.`;
 
