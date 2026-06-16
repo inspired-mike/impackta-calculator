@@ -190,6 +190,7 @@
     padding: 6px 0 6px 14px; margin: 18px 0 30px;
   }
   .formula b { color: var(--text); font-weight: 700; }
+  .warn { display: none; background: rgba(255,90,82,.12); border: 1px solid rgba(255,90,82,.45); color: #ff8a84; font-size: 14px; font-weight: 600; border-radius: 12px; padding: 14px 16px; margin: 0 0 26px; }
   .card {
     background: var(--panel); border: 1px solid var(--border);
     border-radius: 14px; padding: 20px; margin-bottom: 14px;
@@ -311,6 +312,8 @@
     <div class="bignum" id="lossNum">£0</div>
     <div class="bignum-sub">slipping past your business <b style="color:var(--red)">every year</b></div>
     <div class="formula" id="formula"></div>
+
+    <div class="warn" id="chaseWarn">⚠ You're not following up on missed leads. That's revenue walking straight out the door.</div>
 
     <div id="cards"></div>
 
@@ -469,6 +472,8 @@
         <div class="card-body">You already follow up, which is good. Automating it ensures nothing slips when you're busy, and every previous lead receives a second touchpoint automatically.</div>
       </div>`);
     }
+    $('chaseWarn').style.display = (chase === 'no') ? 'block' : 'none';
+
     $('cards').innerHTML = cards.join('');
 
     goTo(2);
