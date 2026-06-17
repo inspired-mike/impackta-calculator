@@ -415,9 +415,9 @@
     const annualLoss = missedEnquiries * closePct * value * 12;
 
     // Recoverable: conservative ~ 50% of the loss, nudged by website/chase gaps
-    let recoverFactor = 0.56;
-    if (web === 'no') recoverFactor += 0.10;
-    if (chase === 'no') recoverFactor += 0.10;
+    let recoverFactor = 0.30;
+    if (web === 'no') recoverFactor += 0.05;
+    if (chase === 'no') recoverFactor += 0.05;
     const recoverable = annualLoss * recoverFactor;
 
     const threeYear = annualLoss * 3;
